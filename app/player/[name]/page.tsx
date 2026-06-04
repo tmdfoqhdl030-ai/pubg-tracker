@@ -1,5 +1,3 @@
-export const runtime = "edge";
-
 import Link from "next/link";
 import { Suspense } from "react";
 import { Shield, ArrowLeft, AlertCircle, RefreshCw, RotateCcw } from "lucide-react";

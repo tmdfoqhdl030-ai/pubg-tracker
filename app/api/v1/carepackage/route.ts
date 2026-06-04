@@ -1,5 +1,3 @@
-export const runtime = "edge";
-
 import { NextRequest, NextResponse } from "next/server";
 import { getPlayer } from "@/lib/pubg-api";
 import { analyzeCarepackageStats, type CarepackageStats } from "@/lib/carepackage-stats";

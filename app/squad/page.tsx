@@ -1,5 +1,3 @@
-export const runtime = "edge";
-
 import Link from "next/link";
 import { Shield, ArrowLeft, Users, ChevronDown } from "lucide-react";
 import { mockSquad } from "@/lib/mock-data";
