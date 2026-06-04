@@ -11,8 +11,8 @@ const MOCK: CarepackageStats = {
     { displayName: "레벨3 헬멧", count: 1 },
   ],
   mostLootedItem: "아드레날린",
-  title: "케어패키지 사냥꾼",
-  funFact: "8게임 중 3번 케어패키지를 열었습니다. AWM을 1회 획득했네요!",
+  title: "보급함 사냥꾼",
+  funFact: "8게임 중 3번 보급함을 열었습니다. AWM을 1회 획득했네요!",
   gamesAnalyzed: 8,
   percentile: 42,
 };

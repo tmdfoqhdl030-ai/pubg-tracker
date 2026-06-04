@@ -2,11 +2,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-interface HackData { suspicionScore: number; suspicionLevel: string; }
-interface HealData { style: string; totalHeals: number; }
-interface BulletData { efficiencyScore: number; bestWeapon: string; }
-interface FarmData { farmingStyle: string; hotZones: { name: string; pct: number }[]; }
-interface CareData { title: string; gamesWithLoot: number; gamesAnalyzed: number; }
+interface HackData { suspicionScore: number; suspicionLevel: string; error?: string; }
+interface HealData { style: string; totalHeals: number; error?: string; }
+interface BulletData { efficiencyScore: number; bestWeapon: string; error?: string; }
+interface FarmData { farmingStyle: string; hotZones: { name: string; pct: number }[]; error?: string; }
+interface CareData { title: string; gamesWithLoot: number; gamesAnalyzed: number; error?: string; }
 
 const HACK_COLOR: Record<string, string> = {
   정상: "#22C55E", 의심: "#F59E0B", 강한의심: "#F97316", 핵의심: "#EF4444",
@@ -86,6 +86,7 @@ export default function TelemetryHighlightBar({
   const [care, setCare] = useState<CareData | null>(null);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
+  const [noMatches, setNoMatches] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -94,11 +95,11 @@ export default function TelemetryHighlightBar({
     const p = platform;
 
     Promise.allSettled([
-      fetch(`${base}/api/v1/hack-score?nickname=${enc}&platform=${p}`).then(r => r.ok ? r.json() : null).catch(() => null),
-      fetch(`${base}/api/v1/heal-pattern?nickname=${enc}&platform=${p}`).then(r => r.ok ? r.json() : null).catch(() => null),
-      fetch(`${base}/api/v1/bullet-efficiency?nickname=${enc}&platform=${p}`).then(r => r.ok ? r.json() : null).catch(() => null),
-      fetch(`${base}/api/v1/farming-heatmap?nickname=${enc}&platform=${p}`).then(r => r.ok ? r.json() : null).catch(() => null),
-      fetch(`${base}/api/v1/carepackage?nickname=${enc}&platform=${p}`).then(r => r.ok ? r.json() : null).catch(() => null),
+      fetch(`${base}/api/v1/hack-score?nickname=${enc}&platform=${p}`).then(r => r.ok ? r.json() : { error: "FAILED" }).catch(() => ({ error: "FAILED" })),
+      fetch(`${base}/api/v1/heal-pattern?nickname=${enc}&platform=${p}`).then(r => r.ok ? r.json() : { error: "FAILED" }).catch(() => ({ error: "FAILED" })),
+      fetch(`${base}/api/v1/bullet-efficiency?nickname=${enc}&platform=${p}`).then(r => r.ok ? r.json() : { error: "FAILED" }).catch(() => ({ error: "FAILED" })),
+      fetch(`${base}/api/v1/farming-heatmap?nickname=${enc}&platform=${p}`).then(r => r.ok ? r.json() : { error: "FAILED" }).catch(() => ({ error: "FAILED" })),
+      fetch(`${base}/api/v1/carepackage?nickname=${enc}&platform=${p}`).then(r => r.ok ? r.json() : { error: "FAILED" }).catch(() => ({ error: "FAILED" })),
     ]).then(([h, he, b, f, c]) => {
       if (cancelled) return;
       const hv = h.status === "fulfilled" ? h.value : null;
@@ -112,7 +113,9 @@ export default function TelemetryHighlightBar({
       setBullet(bv);
       setFarm(fv);
       setCare(cv);
-      // 하나도 없으면 실패 표시
+
+      const hasNoMatches = [hv, hev, bv, fv, cv].some(x => x?.error === "NO_RECENT_MATCHES");
+      setNoMatches(hasNoMatches);
       setFailed(!hv && !hev && !bv && !fv && !cv);
       setLoading(false);
     });
@@ -121,10 +124,16 @@ export default function TelemetryHighlightBar({
   }, [nickname, platform]);
 
   const statsUrl = `/player/${encodeURIComponent(nickname)}?platform=${platform}&tab=stats`;
-  const hackColor = hack ? (HACK_COLOR[hack.suspicionLevel] ?? "#22C55E") : "#64748B";
-  const healColor = heal ? (HEAL_COLOR[heal.style] ?? "#64748B") : "#64748B";
-  const healAggression = heal ? (HEAL_AGGRESSION[heal.style] ?? 50) : 0;
-  const farmCfg = farm ? (FARM_CFG[farm.farmingStyle] ?? { emoji: "⚡", color: "#3B82F6" }) : null;
+  const hasValidHack = hack && !hack.error;
+  const hasValidHeal = heal && !heal.error;
+  const hasValidBullet = bullet && !bullet.error;
+  const hasValidFarm = farm && !farm.error;
+  const hasValidCare = care && !care.error;
+
+  const hackColor = hasValidHack ? (HACK_COLOR[hack.suspicionLevel] ?? "#22C55E") : "#64748B";
+  const healColor = hasValidHeal ? (HEAL_COLOR[heal.style] ?? "#64748B") : "#64748B";
+  const healAggression = hasValidHeal ? (HEAL_AGGRESSION[heal.style] ?? 50) : 0;
+  const farmCfg = hasValidFarm ? (FARM_CFG[farm.farmingStyle] ?? { emoji: "⚡", color: "#3B82F6" }) : null;
 
   return (
     <div
@@ -134,7 +143,6 @@ export default function TelemetryHighlightBar({
         border: "1px solid rgba(249,115,22,0.25)",
       }}
     >
-      {/* 헤더 */}
       <div
         className="flex items-center justify-between px-4 py-3"
         style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
@@ -142,16 +150,16 @@ export default function TelemetryHighlightBar({
         <div className="flex items-center gap-2">
           <span className="text-sm">🔬</span>
           <span className="text-sm font-bold text-white">심층 분석 요약</span>
-          {!loading && !failed && (
+          {!loading && !failed && !noMatches && (
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded"
               style={{ backgroundColor: "#22C55E", color: "#fff" }}>
               LIVE
             </span>
           )}
-          {failed && (
+          {(failed || noMatches) && (
             <span className="text-[10px] font-medium px-1.5 py-0.5 rounded"
               style={{ backgroundColor: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.3)" }}>
-              API 미연결
+              {noMatches ? "분석 불가" : "API 미연결"}
             </span>
           )}
         </div>
@@ -164,7 +172,6 @@ export default function TelemetryHighlightBar({
         </Link>
       </div>
 
-      {/* 분석 행 */}
       {loading ? (
         <div className="px-4 py-5 space-y-3">
           {[...Array(5)].map((_, i) => (
@@ -176,29 +183,37 @@ export default function TelemetryHighlightBar({
             </div>
           ))}
         </div>
-      ) : failed ? (
-        <div className="px-4 py-6 text-center space-y-1">
-          <p className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
-            PUBG API가 연결되지 않아 심층 분석을 불러올 수 없습니다
+      ) : failed || noMatches ? (
+        <div className="px-4 py-6 text-center space-y-2">
+          <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)", lineHeight: "1.4" }}>
+            {noMatches
+              ? "최근 14일간 게임 플레이 기록이 없어 실시간 심층 분석을 제공할 수 없습니다."
+              : "서버가 혼잡하거나 PUBG API 한도를 초과하여 심층 분석을 불러올 수 없습니다."}
           </p>
-          <Link href={statsUrl} className="text-xs underline" style={{ color: "#F97316" }}>
-            전체 분석 탭에서 확인하기
-          </Link>
+          {!noMatches && (
+            <Link href={statsUrl} className="text-xs underline" style={{ color: "#F97316" }}>
+              전체 분석 탭에서 확인하기
+            </Link>
+          )}
         </div>
       ) : (
         <div>
-          {/* 핵 의심 지수 */}
           <Row icon="🔍" label="핵 의심 지수">
-            <MiniBar pct={hack?.suspicionScore ?? 0} color={hackColor} />
-            <span className="text-xs font-bold flex-shrink-0" style={{ color: hackColor }}>
-              {hack ? `${hack.suspicionScore}점` : "—"}
-            </span>
-            {hack && <Pill color={hackColor}>{hack.suspicionLevel}</Pill>}
+            {hasValidHack ? (
+              <>
+                <MiniBar pct={hack.suspicionScore} color={hackColor} />
+                <span className="text-xs font-bold flex-shrink-0" style={{ color: hackColor }}>
+                  {hack.suspicionScore}점
+                </span>
+                <Pill color={hackColor}>{hack.suspicionLevel}</Pill>
+              </>
+            ) : (
+              <Dim>데이터 없음</Dim>
+            )}
           </Row>
 
-          {/* 생존 스타일 — 공격성 진행바 추가 */}
           <Row icon="💊" label="생존 스타일">
-            {heal ? (
+            {hasValidHeal ? (
               <>
                 <MiniBar pct={healAggression} color={healColor} />
                 <span className="text-xs font-bold flex-shrink-0" style={{ color: healColor }}>
@@ -211,9 +226,8 @@ export default function TelemetryHighlightBar({
             )}
           </Row>
 
-          {/* 탄약 효율 */}
           <Row icon="🎯" label="탄약 효율">
-            {bullet ? (
+            {hasValidBullet ? (
               <>
                 <MiniBar pct={bullet.efficiencyScore} color="#3B82F6" />
                 <span className="text-xs font-bold flex-shrink-0" style={{ color: "#3B82F6" }}>
@@ -226,9 +240,8 @@ export default function TelemetryHighlightBar({
             )}
           </Row>
 
-          {/* 파밍 스타일 */}
           <Row icon="🗺" label="파밍 스타일">
-            {farm && farmCfg ? (
+            {hasValidFarm && farmCfg ? (
               <>
                 <span className="text-sm flex-shrink-0">{farmCfg.emoji}</span>
                 <span className="text-xs font-bold flex-shrink-0" style={{ color: farmCfg.color }}>
@@ -243,9 +256,8 @@ export default function TelemetryHighlightBar({
             )}
           </Row>
 
-          {/* 케어패키지 */}
           <Row icon="📦" label="케어패키지">
-            {care ? (
+            {hasValidCare ? (
               <>
                 <MiniBar
                   pct={care.gamesAnalyzed > 0 ? (care.gamesWithLoot / care.gamesAnalyzed) * 100 : 0}

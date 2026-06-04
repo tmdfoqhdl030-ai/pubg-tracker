@@ -30,7 +30,7 @@ interface Props {
 
 async function fetchPlayerData(nickname: string, platform: string) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3001";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
     const res = await fetch(
       `${baseUrl}/api/player?name=${encodeURIComponent(nickname)}&platform=${platform}`,
       { cache: "no-store" }
@@ -429,7 +429,7 @@ export default async function PlayerPage({ params, searchParams }: Props) {
 
               {/* 4. 케어패키지 + 무기 바 차트 — 2열 그리드 */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Suspense fallback={<TelemetrySkeleton title="케어패키지 기록" height={220} />}>
+                <Suspense fallback={<TelemetrySkeleton title="보급함 기록" height={220} />}>
                   <CarepackageCard nickname={nickname} platform={platform} />
                 </Suspense>
                 <WeaponBarChart nickname={nickname} platform={platform} />

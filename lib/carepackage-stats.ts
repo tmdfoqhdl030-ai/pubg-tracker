@@ -21,9 +21,9 @@ export interface CarepackageStats {
 function getTitle(lootGames: number, analyzed: number): string {
   // 분석 게임 수 대비 비율로 계산
   const ratio = analyzed > 0 ? lootGames / analyzed : 0;
-  if (ratio === 0) return "케어패키지가 뭔가요?";
+  if (ratio === 0) return "보급함이 뭔가요?";
   if (ratio <= 0.1) return "눈치형 하이에나";
-  if (ratio <= 0.3) return "케어패키지 사냥꾼";
+  if (ratio <= 0.3) return "보급함 사냥꾼";
   if (ratio <= 0.6) return "보급 전문가";
   return "크래프톤의 VIP";
 }
@@ -84,11 +84,11 @@ export async function analyzeCarepackageStats(
 
   let funFact: string;
   if (totalLootCount === 0) {
-    funFact = `최근 ${gamesAnalyzed}게임에서 케어패키지를 열지 않았습니다. 첫 번째 AWM을 노려보세요!`;
+    funFact = `최근 ${gamesAnalyzed}게임에서 보급함을 열지 않았습니다. 첫 번째 AWM을 노려보세요!`;
   } else if (itemsLooted[0]) {
-    funFact = `최근 ${gamesAnalyzed}게임 중 ${gamesWithLoot}게임에서 케어패키지를 열었습니다. 가장 많이 가져간 아이템은 ${mostLootedItem}(${itemsLooted[0].count}개)입니다.`;
+    funFact = `최근 ${gamesAnalyzed}게임 중 ${gamesWithLoot}게임에서 보급함을 열었습니다. 가장 많이 가져간 아이템은 ${mostLootedItem}(${itemsLooted[0].count}개)입니다.`;
   } else {
-    funFact = `총 ${totalLootCount}개의 케어패키지 아이템을 획득했습니다.`;
+    funFact = `총 ${totalLootCount}개의 보급함 아이템을 획득했습니다.`;
   }
 
   const result: CarepackageStats = {

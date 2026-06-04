@@ -158,7 +158,25 @@ export default function LandingZonesCard({
             </div>
           ))}
         </div>
-      ) : topZones.length === 0 ? (
+      ) : farmError === "NO_RECENT_MATCHES" ? (
+        /* 최근 매치 없음 */
+        <div className="px-4 py-5 text-center">
+          <div className="text-2xl mb-1.5">🗺️</div>
+          <p className="text-xs font-semibold" style={{ color: "#475569" }}>매치 기록 없음</p>
+          <p className="text-[10px] mt-0.5" style={{ color: "#94A3B8", lineHeight: "1.4" }}>
+            최근 14일간 게임 플레이 기록이 없어<br />실시간 분석이 불가능합니다.
+          </p>
+        </div>
+      ) : farmError === "RATE_LIMIT" ? (
+        /* API 호출 한도 초과 */
+        <div className="px-4 py-5 text-center">
+          <div className="text-2xl mb-1.5">⏳</div>
+          <p className="text-xs font-semibold" style={{ color: "#EF4444" }}>서버 요청 지연</p>
+          <p className="text-[10px] mt-0.5" style={{ color: "#94A3B8", lineHeight: "1.4" }}>
+            데이터 요청이 집중되고 있습니다.<br />잠시 후 새로고침(전적 갱신) 해주세요.
+          </p>
+        </div>
+      ) : farmError || topZones.length === 0 ? (
         /* 데이터 없음 */
         <div className="px-4 py-5 text-center">
           <div className="text-2xl mb-1.5">🗺️</div>
@@ -233,7 +251,15 @@ export default function LandingZonesCard({
               </div>
             ))}
           </div>
-        ) : weapons.length === 0 ? (
+        ) : weapError === "NO_RECENT_MATCHES" ? (
+          <p className="text-[10px] text-center py-2 px-1" style={{ color: "#94A3B8", lineHeight: "1.4" }}>
+            최근 14일간 플레이 기록이 없어<br />무기 데이터를 수집하지 못했습니다.
+          </p>
+        ) : weapError === "RATE_LIMIT" ? (
+          <p className="text-[10px] text-center py-2 px-1" style={{ color: "#EF4444", lineHeight: "1.4" }}>
+            서버 요청 한도 초과 (잠시 후 재시도)
+          </p>
+        ) : weapError || weapons.length === 0 ? (
           <p className="text-[10px] text-center py-1" style={{ color: "#CBD5E1" }}>
             무기 데이터를 수집하지 못했습니다
           </p>

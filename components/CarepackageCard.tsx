@@ -45,7 +45,7 @@ export default async function CarepackageCard({
         style={{ borderBottom: "1px solid #F1F5F9" }}>
         <div className="flex items-center gap-2">
           <span className="text-base">📦</span>
-          <span className="text-sm font-bold" style={{ color: "#0F172A" }}>케어패키지 기록</span>
+          <span className="text-sm font-bold" style={{ color: "#0F172A" }}>보급함 기록</span>
         </div>
         <span className="text-xs" style={{ color: "#94A3B8" }}>최근 {data.gamesAnalyzed}게임</span>
       </div>
@@ -69,7 +69,7 @@ export default async function CarepackageCard({
             <div className="text-3xl font-black" style={{ color: hasLoot ? "#F97316" : "#CBD5E1" }}>
               {data.gamesWithLoot}
             </div>
-            <div className="text-[10px]" style={{ color: "#94A3B8" }}>케어패키지 오픈</div>
+            <div className="text-[10px]" style={{ color: "#94A3B8" }}>보급함 오픈</div>
             <div className="text-[10px]" style={{ color: "#CBD5E1" }}>
               {data.gamesAnalyzed}게임 중
             </div>
@@ -116,9 +116,9 @@ export default async function CarepackageCard({
         ) : (
           <div className="text-center py-4">
             <div className="text-3xl mb-2">📦</div>
-            <div className="text-sm font-medium" style={{ color: "#94A3B8" }}>케어패키지 기록 없음</div>
+            <div className="text-sm font-medium" style={{ color: "#94A3B8" }}>보급함 기록 없음</div>
             <div className="text-xs mt-1" style={{ color: "#CBD5E1" }}>
-              최근 {data.gamesAnalyzed}게임에서 케어패키지를 열지 않았습니다
+              최근 {data.gamesAnalyzed}게임에서 보급함을 열지 않았습니다
             </div>
           </div>
         )}

@@ -74,7 +74,7 @@ function TeammateRow({
             {/* 시너지 점수 배지 */}
             <div className="flex items-center gap-1 flex-shrink-0 px-2 py-0.5 rounded-full"
               style={{ backgroundColor: syn.bg, border: `1px solid ${syn.color}30` }}>
-              <span className="text-[9px] font-bold" style={{ color: syn.color }}>시너지</span>
+              <span className="text-[11px] font-bold" style={{ color: syn.color }}>시너지</span>
               <span className="text-xs font-black" style={{ color: syn.color }}>{t.synergyScore}</span>
             </div>
           </div>
@@ -122,8 +122,8 @@ function TeammateRow({
             />
           </div>
           <div className="flex justify-between mt-0.5">
-            <span className="text-[9px]" style={{ color: "#CBD5E1" }}>{syn.label}</span>
-            <span className="text-[9px]" style={{ color: "#CBD5E1" }}>{t.synergyScore}/100</span>
+            <span className="text-[11px]" style={{ color: "#CBD5E1" }}>{syn.label}</span>
+            <span className="text-[11px]" style={{ color: "#CBD5E1" }}>{t.synergyScore}/100</span>
           </div>
         </div>
       </div>
@@ -166,7 +166,7 @@ export default function FrequentTeammatesCard({ playerNickname, platform }: Prop
     async function load() {
       try {
         const base = process.env.NEXT_PUBLIC_BASE_URL ?? "";
-        const res = await fetch(`${base}/api/teammates?name=${encodeURIComponent(playerNickname)}&platform=${platform}&limit=6`);
+        const res = await fetch(`${base}/api/teammates?name=${encodeURIComponent(playerNickname)}&platform=${platform}&limit=4`);
         if (!cancelled) {
           if (res.ok) setData(await res.json());
           else setError("불러오기 실패");
