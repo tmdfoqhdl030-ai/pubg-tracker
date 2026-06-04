@@ -1,3 +1,5 @@
+export const runtime = "edge";
+
 import { NextRequest, NextResponse } from "next/server";
 import { getPlayer } from "@/lib/pubg-api";
 import { analyzeHealPattern, type HealPattern } from "@/lib/heal-pattern";

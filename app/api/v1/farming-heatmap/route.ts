@@ -1,3 +1,5 @@
+export const runtime = "edge";
+
 import { NextRequest, NextResponse } from "next/server";
 import { getPlayer } from "@/lib/pubg-api";
 import { analyzeFarmingHeatmap, type FarmingHeatmap } from "@/lib/farming-heatmap";
