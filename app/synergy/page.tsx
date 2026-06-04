@@ -80,7 +80,7 @@ export default async function SynergyPage({ searchParams }: Props) {
           </Link>
           <div className="flex items-center gap-2">
             <Shield size={16} style={{ color: "#F97316" }} />
-            <span className="font-bold text-sm" style={{ color: "#ECEFF4" }}>PUBG Tracker</span>
+            <span className="font-bold text-sm" style={{ color: "#ECEFF4" }}>펍지고 (PubgGo)</span>
           </div>
           <span className="text-xs" style={{ color: "#72748A" }}>시너지</span>
         </div>
@@ -211,7 +211,7 @@ export default async function SynergyPage({ searchParams }: Props) {
 
       <footer style={{ borderTop: "1px solid #26262E", marginTop: "2rem" }}>
         <div className="max-w-3xl mx-auto px-5 py-5 text-center text-xs" style={{ color: "#3A3A48" }}>
-          PUBG Tracker — PUBG Corporation과 무관한 비공식 서비스입니다.
+          펍지고 (PubgGo) — PUBG Corporation과 무관한 비공식 서비스입니다.
         </div>
       </footer>
     </div>

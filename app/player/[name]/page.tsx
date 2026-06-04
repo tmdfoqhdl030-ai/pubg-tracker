@@ -160,7 +160,7 @@ export default async function PlayerPage({ params, searchParams }: Props) {
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2">
               <Shield size={16} style={{ color: "#F97316" }} />
-              <span className="font-black text-sm tracking-tight" style={{ color: "#fff" }}>PUBG TRACKER</span>
+              <span className="font-black text-sm tracking-tight" style={{ color: "#fff" }}>펍지고 (PubgGo)</span>
             </Link>
             <nav className="hidden sm:flex items-center gap-5">
               {[["홈", "/"], ["팀 분석", "/squad"]].map(([label, href]) => (
@@ -444,7 +444,7 @@ export default async function PlayerPage({ params, searchParams }: Props) {
       {/* ── 푸터 ── */}
       <footer className="mt-8" style={{ borderTop: "1px solid #E2E8F0", backgroundColor: "#fff" }}>
         <div className="max-w-6xl mx-auto px-5 py-5 text-center text-xs" style={{ color: "#94A3B8" }}>
-          PUBG Tracker — PUBG Corporation과 무관한 비공식 서비스입니다.
+          펍지고 (PubgGo) — PUBG Corporation과 무관한 비공식 서비스입니다.
         </div>
       </footer>
     </div>

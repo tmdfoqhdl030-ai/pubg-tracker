@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PUBG Tracker — 배틀그라운드 전적검색",
-  description: "배틀그라운드 전적 검색, AI 플레이 분석, 팀 시너지 분석",
+  title: "펍지고 (PubgGo) — 배틀그라운드 전적검색",
+  description: "배틀그라운드 AI 전적 검색, AI 플레이 분석, 스쿼드 시너지 궁합 분석",
 };
 
 export default function RootLayout({

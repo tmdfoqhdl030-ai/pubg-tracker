@@ -56,7 +56,7 @@ function generateShareCardImage(
   // ── PUBG TRACKER 로고 ──
   ctx.fillStyle = "rgba(255,255,255,0.5)";
   ctx.font = "bold 11px -apple-system, sans-serif";
-  ctx.fillText("🎮  PUBG TRACKER", 28, 42);
+  ctx.fillText("🎮  펍지고 (PubgGo)", 28, 42);
 
   // ── 이모지 ──
   ctx.font = "72px serif";
@@ -251,7 +251,7 @@ export default function DiagnosisShareModal({
             {/* 카드 컨텐츠 */}
             <div className="absolute inset-0 p-5 flex flex-col justify-between">
               <div className="text-[10px] font-semibold" style={{ color: "rgba(255,255,255,0.5)" }}>
-                🎮 PUBG TRACKER
+                🎮 펍지고 (PubgGo)
               </div>
               <div>
                 <div className="text-4xl mb-1">{styleDef.emoji}</div>

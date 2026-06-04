@@ -26,7 +26,7 @@ export default async function SquadPage({ searchParams }: Props) {
         <div className="max-w-4xl mx-auto px-5 h-12 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <Shield size={16} style={{ color: "#F97316" }} />
-            <span className="font-black text-sm tracking-tight text-white">PUBG TRACKER</span>
+            <span className="font-black text-sm tracking-tight text-white">펍지고 (PubgGo)</span>
           </Link>
           <Link href="/" className="flex items-center gap-1 text-xs font-medium transition-colors hover:text-white"
             style={{ color: "rgba(255,255,255,0.4)" }}>
@@ -150,7 +150,7 @@ export default async function SquadPage({ searchParams }: Props) {
 
       <footer className="mt-6" style={{ borderTop: "1px solid #E2E8F0", backgroundColor: "#fff" }}>
         <div className="max-w-4xl mx-auto px-5 py-4 text-center text-xs" style={{ color: "#94A3B8" }}>
-          PUBG Tracker — PUBG Corporation과 무관한 비공식 서비스입니다.
+          펍지고 (PubgGo) — PUBG Corporation과 무관한 비공식 서비스입니다.
         </div>
       </footer>
     </div>

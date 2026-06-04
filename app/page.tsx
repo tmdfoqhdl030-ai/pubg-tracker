@@ -10,7 +10,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Shield size={18} style={{ color: "#F97316" }} />
-            <span className="font-bold text-base" style={{ color: "#0F172A" }}>PUBG Tracker</span>
+            <span className="font-bold text-base" style={{ color: "#0F172A" }}>펍지고 (PubgGo)</span>
           </div>
           <nav className="flex items-center gap-6 text-sm font-medium" style={{ color: "#64748B" }}>
             <Link href="/" className="hover:text-[#0F172A] transition-colors">홈</Link>
@@ -70,7 +70,7 @@ export default function Home() {
 
       <footer className="bg-white" style={{ borderTop: "1px solid #E2E8F0" }}>
         <div className="max-w-5xl mx-auto px-6 py-5 text-center text-xs" style={{ color: "#94A3B8" }}>
-          PUBG Tracker — PUBG Corporation과 무관한 비공식 서비스입니다.
+          펍지고 (PubgGo) — PUBG Corporation과 무관한 비공식 서비스입니다.
         </div>
       </footer>
     </div>
