@@ -152,7 +152,7 @@ export default async function PlayerPage({ params, searchParams }: Props) {
               <span className="font-black text-sm tracking-tight" style={{ color: "#fff" }}>m249.kr</span>
             </Link>
             <nav className="hidden sm:flex items-center gap-5">
-              {[["홈", "/"]].map(([label, href]) => (
+              {[["홈", "/"], ["공략 가이드", "/guide"], ["시너지 분석", `/synergy?players=${encodeURIComponent(nickname)}&platform=${platform}`]].map(([label, href]) => (
                 <Link key={href} href={href}
                   className="text-xs font-medium transition-colors hover:text-white"
                   style={{ color: "rgba(255,255,255,0.45)" }}>
@@ -233,6 +233,10 @@ export default async function PlayerPage({ params, searchParams }: Props) {
                     <span style={{ color: "#F87171" }}>{losses}패</span>
                   </>
                 )}
+                {season && <span style={{ color: "rgba(255,255,255,0.1)" }}>·</span>}
+                <span style={{ color: "rgba(255,255,255,0.2)" }}>
+                  방금 업데이트
+                </span>
               </div>
             </div>
 

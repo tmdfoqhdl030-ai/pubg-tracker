@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Clock } from "lucide-react";
 import type { Metadata } from "next";
 import { GUIDES } from "@/lib/guides";
+import GuideCategoryFilter from "@/components/GuideCategoryFilter";
 
 export const metadata: Metadata = {
   title: "배틀그라운드 공략 & 전적 분석 가이드 — m249.kr",
@@ -36,42 +36,12 @@ export default function GuideListPage() {
           생존 기본기부터 메타 무기, 맵 공략, 에임 훈련, 스쿼드 전략, 전적 지표 해석까지.
           데이터로 실력을 키우는 배그 공략을 모았습니다.
         </p>
+        <p className="text-xs mt-2" style={{ color: "#475569" }}>총 {guides.length}개 공략</p>
       </section>
 
-      {/* 글 목록 */}
+      {/* 카테고리 필터 + 글 목록 */}
       <section className="max-w-3xl mx-auto px-5 pb-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {guides.map((g) => (
-            <Link
-              key={g.slug}
-              href={`/guide/${g.slug}`}
-              className="rounded-xl p-5 transition-all hover:-translate-y-0.5"
-              style={{ backgroundColor: "#0F2A40", border: "1px solid #1E3A5F" }}
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-2xl">{g.emoji}</span>
-                <span
-                  className="text-[11px] font-bold px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: "#F9731620", color: "#FB923C", border: "1px solid #F9731640" }}
-                >
-                  {g.category}
-                </span>
-              </div>
-              <h2 className="text-base font-bold mb-2 leading-snug" style={{ color: "#F1F5F9" }}>
-                {g.title}
-              </h2>
-              <p className="text-xs leading-6 mb-3" style={{ color: "#94A3B8" }}>
-                {g.description}
-              </p>
-              <div className="flex items-center gap-1.5 text-[11px]" style={{ color: "#64748B" }}>
-                <Clock size={11} />
-                <span>약 {g.readMinutes}분</span>
-                <span>·</span>
-                <span>{g.publishedAt}</span>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <GuideCategoryFilter guides={guides} />
       </section>
 
       {/* 푸터 */}

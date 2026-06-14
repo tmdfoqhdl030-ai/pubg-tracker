@@ -42,6 +42,8 @@ export default function Home() {
           <nav className="flex items-center gap-6 text-sm font-medium" style={{ color: "#64748B" }}>
             <Link href="/" className="hover:text-[#0F172A] transition-colors">홈</Link>
             <Link href="/guide" className="hover:text-[#0F172A] transition-colors">공략</Link>
+            <Link href="/synergy" className="hover:text-[#0F172A] transition-colors hidden sm:block">시너지</Link>
+            <Link href="/about" className="hover:text-[#0F172A] transition-colors hidden sm:block">소개</Link>
           </nav>
         </div>
       </header>
