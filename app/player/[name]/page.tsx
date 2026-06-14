@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { Shield, ArrowLeft, AlertCircle, RefreshCw, RotateCcw } from "lucide-react";
+import { ArrowLeft, AlertCircle, RefreshCw, RotateCcw } from "lucide-react";
 import { getTier, getTierFromString } from "@/components/TierBadge";
 import PlayerCard from "@/components/PlayerCard";
 import AIDiagnosisCard from "@/components/AIDiagnosisCard";
 import TierPredictionCard from "@/components/TierPredictionCard";
-import DangerScoreCard from "@/components/DangerScoreCard";
 import WeaponBarChart from "@/components/WeaponBarChart";
 import WeaponMiniCard from "@/components/WeaponMiniCard";
 import MatchHistoryList from "@/components/MatchHistoryList";
@@ -16,32 +15,33 @@ import BulletEfficiencyCard from "@/components/BulletEfficiencyCard";
 import FarmingHeatmapCard from "@/components/FarmingHeatmapCard";
 import CarepackageCard from "@/components/CarepackageCard";
 import TelemetrySkeleton from "@/components/TelemetrySkeleton";
-import TelemetryHighlightBar from "@/components/TelemetryHighlightBar";
 import LandingZonesCard from "@/components/LandingZonesCard";
 import TabNav from "@/components/TabNav";
 import StickyHeader from "@/components/StickyHeader";
 import ShareButton from "@/components/ShareButton";
 import { mockPlayer } from "@/lib/mock-data";
+import { fetchPlayerData as fetchPlayerDataLib } from "@/lib/fetch-player-data";
+import GuideRecommendCard from "@/components/GuideRecommendCard";
 
 interface Props {
   params: Promise<{ name: string }>;
   searchParams: Promise<{ platform?: string; tab?: string }>;
 }
 
-async function fetchPlayerData(nickname: string, platform: string) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function fetchPlayerData(nickname: string, platform: string): Promise<any> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
-    const res = await fetch(
-      `${baseUrl}/api/player?name=${encodeURIComponent(nickname)}&platform=${platform}`,
-      { cache: "no-store" }
-    );
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      return { error: body.error ?? "데이터 조회에 실패했습니다" };
+    return await fetchPlayerDataLib(nickname, platform);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (msg === "NOT_FOUND") {
+      return { error: "닉네임을 찾을 수 없습니다. 정확한 닉네임과 플랫폼을 확인해주세요." };
     }
-    return await res.json();
-  } catch {
-    return { error: "서버에 연결할 수 없습니다" };
+    if (msg === "RATE_LIMIT") {
+      return { error: "요청이 너무 많습니다. 잠시 후 다시 시도해주세요. (서버 요청 한도 초과)" };
+    }
+    console.error("[page] fetchPlayerData error:", msg);
+    return { error: "데이터 조회에 실패했습니다." };
   }
 }
 
@@ -79,13 +79,6 @@ function Sidebar({
         />
       )}
 
-      {/* AI 플레이 진단 (리디자인) */}
-      <AIDiagnosisCard
-        styleKey={(aiAnalysis.styleKey as Parameters<typeof AIDiagnosisCard>[0]["styleKey"]) ?? "rookie"}
-        season={season as unknown as Parameters<typeof AIDiagnosisCard>[0]["season"]}
-        nickname={nickname}
-      />
-
       {/* 다음 시즌 티어 예측 — season 없어도 ranked 있으면 표시 */}
       {(season || rankedTier) && (
         <TierPredictionCard
@@ -115,8 +108,6 @@ export default async function PlayerPage({ params, searchParams }: Props) {
   const modeStats = data.modeStats ?? null;
   const rankedTier = data.rankedTier ?? null;
   const aiAnalysis = data.aiAnalysis ?? mockPlayer.aiAnalysis;
-  const dangerScore = data.dangerScore ?? 50;
-  const dangerDetails = data.dangerDetails ?? mockPlayer.dangerDetails;
   const recentMatches = data.recentMatches ?? [];
 
   // 랭크 티어 우선, 없으면 KDA 폴백
@@ -157,11 +148,11 @@ export default async function PlayerPage({ params, searchParams }: Props) {
         <div className="max-w-6xl mx-auto px-5 h-12 flex items-center justify-between">
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2">
-              <Shield size={16} style={{ color: "#F97316" }} />
-              <span className="font-black text-sm tracking-tight" style={{ color: "#fff" }}>펍지고 (PubgGo)</span>
+              <img src="/logo.svg" alt="m249" width={24} height={24} style={{ borderRadius: 5 }} />
+              <span className="font-black text-sm tracking-tight" style={{ color: "#fff" }}>m249.kr</span>
             </Link>
             <nav className="hidden sm:flex items-center gap-5">
-              {[["홈", "/"], ["팀 분석", "/squad"]].map(([label, href]) => (
+              {[["홈", "/"]].map(([label, href]) => (
                 <Link key={href} href={href}
                   className="text-xs font-medium transition-colors hover:text-white"
                   style={{ color: "rgba(255,255,255,0.45)" }}>
@@ -302,21 +293,19 @@ export default async function PlayerPage({ params, searchParams }: Props) {
 
             {/* 메인 */}
             <div className="flex-1 min-w-0 space-y-4">
-              {/* 매치 전 위험도 — 상단 요약 */}
-              {!hasError && recentMatches.length > 0 && (
-                <DangerScoreCard
-                  score={dangerScore}
-                  recentKDA={dangerDetails.recentKDA}
-                  recentDamage={dangerDetails.recentDamage}
-                  recentHeadshot={dangerDetails.recentHeadshot}
-                  preferredWeapon={dangerDetails.preferredWeapon}
-                  playStyle={dangerDetails.playStyle}
+              {/* AI 플레이 진단 — 풀 와이드 */}
+              {!hasError && (
+                <AIDiagnosisCard
+                  styleKey={(aiAnalysis.styleKey as Parameters<typeof AIDiagnosisCard>[0]["styleKey"]) ?? "rookie"}
+                  season={season as unknown as Parameters<typeof AIDiagnosisCard>[0]["season"]}
+                  nickname={nickname}
+                  recentMatches={recentMatches as Parameters<typeof AIDiagnosisCard>[0]["recentMatches"]}
                 />
               )}
 
-              {/* 심층 분석 인라인 요약 */}
-              {!hasError && (
-                <TelemetryHighlightBar nickname={nickname} platform={platform} />
+              {/* 약점 기반 공략 추천 */}
+              {!hasError && season && (
+                <GuideRecommendCard season={season as unknown as Parameters<typeof GuideRecommendCard>[0]["season"]} />
               )}
 
               {/* 플레이 기록 없음 */}
@@ -442,7 +431,7 @@ export default async function PlayerPage({ params, searchParams }: Props) {
       {/* ── 푸터 ── */}
       <footer className="mt-8" style={{ borderTop: "1px solid #E2E8F0", backgroundColor: "#fff" }}>
         <div className="max-w-6xl mx-auto px-5 py-5 text-center text-xs" style={{ color: "#94A3B8" }}>
-          펍지고 (PubgGo) — PUBG Corporation과 무관한 비공식 서비스입니다.
+          m249.kr — PUBG Corporation과 무관한 비공식 배틀그라운드 전적검색 서비스입니다.
         </div>
       </footer>
     </div>
