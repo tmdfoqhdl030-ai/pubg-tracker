@@ -126,6 +126,6 @@ export async function analyzeHealPattern(
     styleDescription: description, funFact, gamesAnalyzed,
   };
 
-  setCache(cacheKey, result, 3600 * 1000);
+  setCache(cacheKey, result, 4 * 3600 * 1000);
   return result;
 }

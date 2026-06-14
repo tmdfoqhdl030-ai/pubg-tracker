@@ -292,7 +292,7 @@ export async function analyzeFarmingHeatmap(
 
   // 분석 성공한 경우만 캐시 (gamesAnalyzed=0이면 캐시 안 함 → 다음 요청 때 재시도)
   if (gamesAnalyzed > 0) {
-    setCache(cacheKey, result, 7200 * 1000); // 2h
+    setCache(cacheKey, result, 6 * 3600 * 1000); // 2h
   }
   return result;
 }

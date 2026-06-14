@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- B안: 조준경 원형형 -->
+  <circle cx="100" cy="100" r="100" fill="#0D1117"/>
+  <!-- 조준경 원 -->
+  <circle cx="100" cy="100" r="72" fill="none" stroke="#F97316" stroke-width="2" opacity="0.4"/>
+  <circle cx="100" cy="100" r="50" fill="none" stroke="#F97316" stroke-width="1.5" opacity="0.3"/>
+  <!-- 십자선 -->
+  <line x1="100" y1="28" x2="100" y2="60" stroke="#F97316" stroke-width="2" opacity="0.5"/>
+  <line x1="100" y1="140" x2="100" y2="172" stroke="#F97316" stroke-width="2" opacity="0.5"/>
+  <line x1="28" y1="100" x2="60" y2="100" stroke="#F97316" stroke-width="2" opacity="0.5"/>
+  <line x1="140" y1="100" x2="172" y2="100" stroke="#F97316" stroke-width="2" opacity="0.5"/>
+  <!-- m249 텍스트 -->
+  <text x="100" y="112" font-family="Arial Black, sans-serif" font-size="44" font-weight="900" fill="white" text-anchor="middle" letter-spacing="-1">m249</text>
+</svg>

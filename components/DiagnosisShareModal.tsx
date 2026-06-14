@@ -56,7 +56,7 @@ function generateShareCardImage(
   // ── PUBG TRACKER 로고 ──
   ctx.fillStyle = "rgba(255,255,255,0.5)";
   ctx.font = "bold 11px -apple-system, sans-serif";
-  ctx.fillText("🎮  펍지고 (PubgGo)", 28, 42);
+  ctx.fillText("🎮  m249.kr", 28, 42);
 
   // ── 이모지 ──
   ctx.font = "72px serif";
@@ -133,7 +133,7 @@ function generateShareCardImage(
   // ── 하단 URL ──
   ctx.fillStyle = "rgba(255,255,255,0.3)";
   ctx.font = "11px -apple-system, sans-serif";
-  ctx.fillText("pubg-tracker.vercel.app", 28, H - 28);
+  ctx.fillText("m249.kr", 28, H - 28);
 
   canvas.width = W * 2;
   canvas.height = H * 2;
@@ -251,7 +251,7 @@ export default function DiagnosisShareModal({
             {/* 카드 컨텐츠 */}
             <div className="absolute inset-0 p-5 flex flex-col justify-between">
               <div className="text-[10px] font-semibold" style={{ color: "rgba(255,255,255,0.5)" }}>
-                🎮 펍지고 (PubgGo)
+                🎮 m249.kr
               </div>
               <div>
                 <div className="text-4xl mb-1">{styleDef.emoji}</div>
@@ -276,7 +276,7 @@ export default function DiagnosisShareModal({
                 )}
               </div>
               <div className="text-[9px]" style={{ color: "rgba(255,255,255,0.3)" }}>
-                pubg-tracker.vercel.app
+                m249.kr
               </div>
             </div>
           </div>

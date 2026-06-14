@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getPlayer, getMatch } from "@/lib/pubg-api";
 import { buildFrequentTeammates } from "@/lib/teammates";
-import { getCache, setCache } from "@/lib/cache";
+import { getCache, setCache, getStaleOrFresh } from "@/lib/cache";
 
 const TTL_30MIN = 30 * 60 * 1000;
 
@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
     const player = await getPlayer(name, platform);
 
     // 2. 최근 매치 데이터 수집 (RPM 무제한)
-    const matchLimit = Math.min(player.recentMatchIds.length, 20);
+    const matchLimit = Math.min(player.recentMatchIds.length, 5);
     const matchResults = await Promise.allSettled(
       player.recentMatchIds.slice(0, matchLimit).map((id) => getMatch(id, platform))
     );
@@ -52,10 +52,14 @@ export async function GET(req: NextRequest) {
     if (msg === "NOT_FOUND") {
       return NextResponse.json({ error: "플레이어를 찾을 수 없습니다" }, { status: 404 });
     }
+    // RATE_LIMIT: stale 캐시 반환, 없으면 빈 결과 (에러 노출 안 함)
     if (msg === "RATE_LIMIT") {
-      return NextResponse.json({ error: "API 요청 한도 초과. 잠시 후 재시도하세요" }, { status: 429 });
+      const stale = getStaleOrFresh<unknown>(cacheKey);
+      if (stale) return NextResponse.json(stale);
+      return NextResponse.json({ basePlayer: name, frequentTeammates: [], _stale: true });
     }
     console.error("[Teammates API]", msg);
-    return NextResponse.json({ error: "팀원 조회 중 오류가 발생했습니다" }, { status: 500 });
+    // 기타 오류도 빈 결과 반환 (에러 화면 방지)
+    return NextResponse.json({ basePlayer: name, frequentTeammates: [], _stale: true });
   }
 }

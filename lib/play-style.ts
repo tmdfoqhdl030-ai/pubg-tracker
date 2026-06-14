@@ -35,6 +35,7 @@ export interface PlayStyleDef {
   color: string;         // 포인트 색상
   bgColor: string;       // 카드 배경
   summary: string;
+  strengths: string[];   // 잘하는 점 / 강점
   improvements: string[];
 }
 
@@ -50,6 +51,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#7C3AED",
     bgColor: "#F5F3FF",
     summary: "헤드샷 비율과 KDA가 모두 높은 정밀 사수 타입입니다. 당신과 교전한 적은 어디서 맞았는지도 모릅니다.",
+    strengths: [
+      "정밀한 헤드샷으로 탄 한 발 한 발의 효율이 최상위권",
+      "교전 시작부터 끝까지 주도권을 빼앗기지 않는 안정적인 에임",
+      "원거리·중거리 양쪽 모두 강해 어떤 교전 거리에서도 우위",
+    ],
     improvements: [
       "헤드샷 기회를 위해 부시 저격 포지션을 적극 활용하세요",
       "교전 전 배율을 미리 맞춰 반응 속도를 높이세요",
@@ -67,6 +73,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#EF4444",
     bgColor: "#FFF1F2",
     summary: "이름만 들어도 적이 도망가는 수준의 KDA를 기록 중입니다. 당신과 마주치면 게임이 끝납니다.",
+    strengths: [
+      "KDA가 탑 1% 수준 — 어떤 교전도 손해 없이 끝냄",
+      "선제 교전 판단력이 뛰어나 불리한 싸움을 거의 하지 않음",
+      "압박감만으로도 적 팀의 포지셔닝을 흔드는 존재감",
+    ],
     improvements: [
       "팀 협력으로 단독 교전 승률을 더욱 높여보세요",
       "탑10 진입 후 안정적 파밍으로 우승 확률을 높이세요",
@@ -84,6 +95,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#DC2626",
     bgColor: "#FFF7ED",
     summary: "높은 딜량과 KDA를 동시에 갖춘 전장의 파괴자입니다. 한 경기당 손해보는 법이 없습니다.",
+    strengths: [
+      "딜량 + KDA 동시 상위권 — 팀의 핵심 공격 자원",
+      "교전에서 이기고도 체력을 아끼는 효율적인 싸움 방식",
+      "파밍 속도와 교전 참여 타이밍 모두 최적화되어 있음",
+    ],
     improvements: [
       "높은 딜량을 유지하면서 탑10 진입 의식도 챙기세요",
       "팀원의 딜 서포트를 통해 우승률을 높여보세요",
@@ -101,6 +117,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#0369A1",
     bgColor: "#F0F9FF",
     summary: "KDA, 딜량, 승률, 탑10 모든 지표가 균형있게 높습니다. 전장의 완벽한 지휘관이자 팀의 중심입니다.",
+    strengths: [
+      "KDA·딜량·승률·탑10 4개 지표 전부 상위권인 진정한 완성형",
+      "교전·생존·포지셔닝 모두 높은 수준으로 팀에서 없어선 안 될 존재",
+      "상황 판단력이 뛰어나 팀 전체의 플레이 방향을 이끔",
+    ],
     improvements: [
       "팀을 이끄는 콜을 더 적극적으로 해보세요",
       "이미 높은 지표를 유지하며 컨시스턴시에 집중하세요",
@@ -118,6 +139,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#78716C",
     bgColor: "#FAFAF9",
     summary: "KDA는 엄청 좋은데 왜 우승이 없죠? 혼자만 살아남으려는 건 아닌지 팀원이 의심하고 있습니다.",
+    strengths: [
+      "개인 교전 능력이 뛰어나 1대1 상황에서 거의 지지 않음",
+      "불필요한 교전을 피하고 유리한 상황만 골라 싸우는 냉철함",
+      "생존 본능이 강해 개인 기여도 지표는 항상 높게 유지",
+    ],
     improvements: [
       "교전 후 팀원을 챙기고 함께 생존하는 전략을 써보세요",
       "혼자 교전보다 팀 배치를 먼저 고려해보세요",
@@ -135,6 +161,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#D97706",
     bgColor: "#FFFBEB",
     summary: "딜량은 적지만 우승률이 높습니다. 싸우지 않고 살아남아 치킨을 먹는 진정한 생존 고수입니다.",
+    strengths: [
+      "자기장 이동과 포지셔닝이 극도로 정확해 파이널 서클 진입율 최상",
+      "불필요한 위험을 감수하지 않는 전략적 사고와 냉정한 판단력",
+      "우승 기회를 끝까지 살려내는 끈질긴 생존력",
+    ],
     improvements: [
       "가끔은 교전에도 참여해 딜량을 올려보세요",
       "유리한 상황에서 선제 교전을 늘려보세요",
@@ -152,6 +183,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#0F766E",
     bgColor: "#F0FDFA",
     summary: "헤드샷율이 높고 딜량도 안정적입니다. 상대방은 어디서 죽는지도 모릅니다. 조용한 암살자 유형입니다.",
+    strengths: [
+      "헤드샷 적중률이 높아 탄약 한 발로 교전의 판도를 뒤집음",
+      "원거리에서 조용히 처리하는 저격 능력으로 노출 없이 킬 생산",
+      "안정적인 딜량으로 팀에 꾸준한 기여를 하는 신뢰형 플레이어",
+    ],
     improvements: [
       "근접 교전 대비 보조 무기를 항상 챙기세요",
       "저격 포지션 후 빠른 위치 이동으로 생존율을 높이세요",
@@ -169,6 +205,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#4338CA",
     bgColor: "#EEF2FF",
     summary: "딜량은 엄청나게 넣는데 KDA가 낮습니다. 교전은 잘 하지만 마무리가 아쉬운 열정파 플레이어입니다.",
+    strengths: [
+      "딜량이 높아 팀원이 킬을 따기 쉬운 환경을 만들어주는 공헌자",
+      "교전을 두려워하지 않는 적극성으로 항상 팀에 기회를 만들어냄",
+      "근·중거리 교전 화력 자체는 상위권 — 실력 자체는 충분히 있음",
+    ],
     improvements: [
       "딜을 넣고 나서 바로 엄폐물로 이동하는 습관을 기르세요",
       "교전 시작 전 체력/장비 상태를 먼저 확인하세요",
@@ -186,6 +227,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#64748B",
     bgColor: "#F8FAFC",
     summary: "KDA는 높은데 딜량이 낮습니다. 팀원이 딜을 다 넣으면 마지막에 막타를 치는 하이에나 스타일입니다.",
+    strengths: [
+      "팀원과의 호흡을 잘 맞춰 교전을 효율적으로 마무리하는 능력",
+      "KDA가 높아 개인 생존율과 교전 성공율 지표는 우수",
+      "불필요한 딜 낭비 없이 결정적인 순간에 개입하는 타이밍 감각",
+    ],
     improvements: [
       "교전 초반부터 적극적으로 딜을 넣어보세요",
       "팀원을 따라다니며 막타 치는 습관을 개선해보세요",
@@ -203,6 +249,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#B91C1C",
     bgColor: "#FFF1F2",
     summary: "KDA는 높지만 탑10 진입율이 낮습니다. 교전은 잘 하지만 앞만 보고 달리는 진정한 돌격대장입니다.",
+    strengths: [
+      "교전 개시 능력과 돌파력이 뛰어나 팀의 선봉 역할에 최적",
+      "KDA가 높아 개인 교전에서는 거의 지지 않는 기본기 보유",
+      "공격적인 플레이로 상대 팀에 심리적 압박을 지속적으로 가함",
+    ],
     improvements: [
       "무조건 돌진보다 자기장 위치를 먼저 파악하세요",
       "탑10 진입 후 교전을 시작하는 습관을 기르세요",
@@ -220,6 +271,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#EA580C",
     bgColor: "#FFF7ED",
     summary: "딜량은 많이 넣지만 우승이 거의 없습니다. 교전을 너무 좋아해서 항상 게임이 일찍 끝납니다.",
+    strengths: [
+      "딜량이 최상위권으로 교전 참여 시 팀에 막대한 화력 지원",
+      "교전 상황에서 쫄지 않는 강한 멘탈로 정면 돌파 능력 우수",
+      "근거리 교전 특화 — 좁은 공간에서의 싸움은 타의 추종 불허",
+    ],
     improvements: [
       "불필요한 교전을 자제하고 생존을 우선시하세요",
       "자기장 이동 타이밍을 미리 계획하세요",
@@ -237,6 +293,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#86198F",
     bgColor: "#FDF4FF",
     summary: "탑10 진입율은 높지만 딜량과 KDA가 낮습니다. 실제로는 숨어 있으면서 공격형인 척하는 연기파 플레이어입니다.",
+    strengths: [
+      "탑10 진입율이 높아 우승 기회를 꾸준히 만들어내는 안정적인 플레이",
+      "자기장 파악과 포지셔닝 능력이 뛰어나 거의 자기장 피해를 입지 않음",
+      "후반 서클에서 살아남는 능력이 뛰어나 반전 우승을 자주 만들어냄",
+    ],
     improvements: [
       "탑10 생존 기술을 교전 기술로도 이어가보세요",
       "유리한 위치 선점 후 적극적으로 교전해보세요",
@@ -254,6 +315,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#6366F1",
     bgColor: "#EEF2FF",
     summary: "탑10 진입율이 낮은데 우승율이 높습니다. 도대체 어떻게 우승하는지 분석이 안 되는 미스터리 유형입니다.",
+    strengths: [
+      "파이널 서클에서의 집중력과 순간 판단력이 특출나게 뛰어남",
+      "위기 상황에서 반전을 만들어내는 독보적인 클러치 능력 보유",
+      "예측 불가능한 플레이 패턴으로 상대가 대응하기 어려운 스타일",
+    ],
     improvements: [
       "지금의 비결이 뭔지 본인도 파악해보세요",
       "더 일관성 있는 플레이를 위해 루틴을 만들어보세요",
@@ -271,6 +337,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#78716C",
     bgColor: "#FAFAF9",
     summary: "딜량은 높지만 헤드샷율이 낮습니다. 정확도보다는 탄약 소모로 싸우는 스프레이 마스터입니다.",
+    strengths: [
+      "딜량이 높아 교전에서 상대에게 지속적인 압박을 가하는 능력",
+      "탄약을 아끼지 않는 과감한 교전 스타일로 적을 심리적으로 압도",
+      "근·중거리 스프레이 교전에서 화력 우위를 점하는 능력",
+    ],
     improvements: [
       "조준 연습으로 헤드샷율을 높이면 딜 효율이 올라갑니다",
       "근거리 교전 시 버스트 사격보다 단발 제어를 연습해보세요",
@@ -288,6 +359,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#71717A",
     bgColor: "#FAFAFA",
     summary: "딜은 넣는데 KDA도 낮고 우승도 없습니다. 열심히 하는 것 같은데 결과가 따라주지 않는 아이러니한 타입입니다.",
+    strengths: [
+      "어떤 상황에서도 교전을 포기하지 않는 불굴의 도전 정신",
+      "딜 투자를 아끼지 않아 팀에 기여하려는 의지가 강함",
+      "경험이 쌓이면 빠르게 성장할 잠재력을 충분히 보유하고 있음",
+    ],
     improvements: [
       "딜을 넣고 나서 생존하는 방법을 연습해보세요",
       "교전 후 안전한 위치로 이동하는 습관을 기르세요",
@@ -305,6 +381,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#059669",
     bgColor: "#ECFDF5",
     summary: "게임 경험은 많은데 KDA와 우승율이 낮습니다. 버스를 태워주듯 다른 사람에게 경험치를 나눠주고 있습니다.",
+    strengths: [
+      "많은 게임 수로 다양한 상황 경험을 보유한 베테랑 플레이어",
+      "어떤 맵·상황에서도 당황하지 않고 침착하게 대응하는 멘탈",
+      "경험을 바탕으로 팀원에게 정보를 공유하고 방향을 제시하는 능력",
+    ],
     improvements: [
       "많은 경험을 바탕으로 기본 전술을 다시 점검해보세요",
       "게임 수보다 질에 집중해 각 교전을 분석해보세요",
@@ -322,6 +403,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#15803D",
     bgColor: "#F0FDF4",
     summary: "탑10 진입은 잘 하는데 딜량이 극히 낮습니다. 살아는 있는데 아무것도 안 하는 대형 거북이 유형입니다.",
+    strengths: [
+      "탑10 진입율이 높아 항상 우승 가능한 상황까지 살아남는 능력",
+      "자기장 안에서 안전한 포지션을 먼저 잡는 선제 이동 능력",
+      "불필요한 교전을 완벽하게 피하는 냉정한 상황 판단력",
+    ],
     improvements: [
       "탑10에서 유리한 위치를 잡았을 때 적극적으로 교전해보세요",
       "파밍 시간을 줄이고 교전 참여 비율을 높여보세요",
@@ -339,6 +425,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#C2410C",
     bgColor: "#FFF7ED",
     summary: "KDA와 딜량이 모두 높은 강한 공격형 플레이어입니다. 교전에서 항상 주도권을 잡고 싸웁니다.",
+    strengths: [
+      "KDA와 딜량 두 지표 모두 상위권 — 팀의 핵심 공격수 역할",
+      "교전 주도권을 먼저 가져가는 선제 능력으로 유리한 싸움만 함",
+      "강한 공격력으로 팀의 사기를 올리고 게임의 흐름을 주도",
+    ],
     improvements: [
       "생존 의식을 더하면 우승률을 높일 수 있습니다",
       "팀원과의 협력 교전으로 교전 성공률을 극대화하세요",
@@ -356,6 +447,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#1D4ED8",
     bgColor: "#EFF6FF",
     summary: "KDA, 딜량, 승률, 탑10 모든 지표가 균형 잡혀 있습니다. 어떤 상황에서도 안정적인 플레이를 합니다.",
+    strengths: [
+      "어떤 역할도 소화 가능한 범용성 — 팀 구성에 관계없이 기여",
+      "상황에 따라 공격·생존·서포트 역할을 유연하게 전환하는 적응력",
+      "일관성 있는 퍼포먼스로 팀이 믿고 의지할 수 있는 안정감",
+    ],
     improvements: [
       "모든 지표가 좋은 만큼 한 분야를 더 특화해보세요",
       "팀원의 플레이 스타일에 맞게 유연하게 역할을 바꿔보세요",
@@ -373,6 +469,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#16A34A",
     bgColor: "#F0FDF4",
     summary: "탑10 진입율이 높아 안정적으로 살아남는 플레이어입니다. 끝까지 살아남는 것 자체가 전략입니다.",
+    strengths: [
+      "탑10 진입율이 압도적 — 어떤 상황에서도 끝까지 살아남는 생존 능력",
+      "자기장 이동 타이밍과 포지션 선택이 매 게임 안정적으로 최적화",
+      "후반 서클에서 냉정함을 잃지 않고 우승 찬스를 끝까지 유지",
+    ],
     improvements: [
       "생존 기술을 교전 기술로도 이어가보세요",
       "유리한 위치에서 교전을 늘려 딜량을 높여보세요",
@@ -390,6 +491,11 @@ export const PLAY_STYLES: Record<PlayStyleKey, PlayStyleDef> = {
     color: "#3B82F6",
     bgColor: "#EFF6FF",
     summary: "아직 성장 중인 플레이어입니다. 매 경기 하나씩 배워가다 보면 금방 실력이 올라갈 것입니다!",
+    strengths: [
+      "모든 것이 성장 가능한 단계 — 지금부터 쌓는 습관이 실력의 기반",
+      "실수를 두려워하지 않고 경험을 통해 빠르게 배우는 적극성",
+      "아직 굳어진 나쁜 습관이 없어 올바른 방향으로 성장할 최적의 시기",
+    ],
     improvements: [
       "기본 이동과 엄폐 기술을 먼저 익히세요",
       "무기마다 반동 패턴이 다르니 사격장에서 연습해보세요",

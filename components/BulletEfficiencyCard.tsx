@@ -1,10 +1,11 @@
 // 🎯 무기별 탄약 효율 (BPK) 카드 — 비동기 서버 컴포넌트
 
 import type { BulletEfficiency } from "@/lib/bullet-efficiency";
+import { getBaseUrl } from "@/lib/base-url";
 
 async function fetchBulletEfficiency(nickname: string, platform: string): Promise<BulletEfficiency | null> {
   try {
-    const base = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3001";
+    const base = getBaseUrl();
     const res = await fetch(
       `${base}/api/v1/bullet-efficiency?nickname=${encodeURIComponent(nickname)}&platform=${platform}`,
       { cache: "no-store" }

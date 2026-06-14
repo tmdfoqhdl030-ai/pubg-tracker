@@ -1,10 +1,11 @@
 // 🔍 핵 의심 지수 카드 — 컴팩트 수평 레이아웃
 
 import type { HackScore } from "@/lib/hack-detection";
+import { getBaseUrl } from "@/lib/base-url";
 
 async function fetchHackScore(nickname: string, platform: string): Promise<HackScore | null> {
   try {
-    const base = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3001";
+    const base = getBaseUrl();
     const res = await fetch(
       `${base}/api/v1/hack-score?nickname=${encodeURIComponent(nickname)}&platform=${platform}`,
       { cache: "no-store" }

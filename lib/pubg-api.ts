@@ -1,4 +1,8 @@
-import { getCache, setCache } from "./cache";
+import {
+  getCache, setCache, setCacheWithStale,
+  getCacheAsync, getStaleOrFreshAsync, setCacheWithStaleAsync,
+} from "./cache";
+import { pubgRatelimit } from "./redis";
 
 const BASE_URL = "https://api.pubg.com/shards";
 
@@ -9,25 +13,66 @@ function getHeaders() {
   };
 }
 
-// 플랫폼별 shard 매핑
 function getShard(platform: string): string {
   if (platform === "kakao") return "kakao";
   return "steam";
 }
 
+// ── 중복 요청 방지 (inflight dedup) ──────────────────────────────────
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const inFlightFetches = new Map<string, Promise<any>>();
 
-async function pubgFetch(url: string) {
+// ── 전역 요청 throttle (분당 한도 보호) ──────────────────────────────
+// PUBG 한도는 분당 10회. 안전하게 9회로 두고 슬라이딩 윈도우로 제어.
+// /matches/{id} 엔드포인트는 rate limit 면제 대상이라 throttle 제외.
+const RATE_LIMIT_PER_MIN = 9;
+const WINDOW_MS = 60 * 1000;
+let callTimestamps: number[] = [];
+
+// 인메모리 슬라이딩 윈도우 (Redis 미연결 시 폴백)
+async function acquireRateSlotMemory(): Promise<void> {
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const now = Date.now();
+    callTimestamps = callTimestamps.filter((t) => now - t < WINDOW_MS);
+    if (callTimestamps.length < RATE_LIMIT_PER_MIN) {
+      callTimestamps.push(now);
+      return;
+    }
+    const waitMs = WINDOW_MS - (now - callTimestamps[0]) + 50;
+    await new Promise((r) => setTimeout(r, Math.min(waitMs, 5000)));
+  }
+}
+
+// 분산 rate limiter (Redis 공유 카운터). 토큰 없으면 대기 후 재시도.
+async function acquireRateSlot(): Promise<void> {
+  if (!pubgRatelimit) return acquireRateSlotMemory();
+  const MAX_WAIT_MS = 20_000; // 최대 20초 대기 후 그냥 진행 (무한 대기 방지)
+  const start = Date.now();
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    try {
+      const { success, reset } = await pubgRatelimit.limit("global");
+      if (success) return;
+      const waitMs = Math.min(Math.max(reset - Date.now(), 200), 3000);
+      if (Date.now() - start > MAX_WAIT_MS) return; // 너무 오래 걸리면 통과
+      await new Promise((r) => setTimeout(r, waitMs));
+    } catch {
+      return acquireRateSlotMemory(); // Redis 오류 시 폴백
+    }
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function pubgFetch(url: string, opts?: { rateLimited?: boolean }): Promise<any> {
+  const rateLimited = opts?.rateLimited ?? true; // 기본 true, 매치만 false
   let promise = inFlightFetches.get(url);
   if (!promise) {
     promise = (async () => {
+      if (rateLimited) await acquireRateSlot();
       const res = await fetch(url, { headers: getHeaders(), cache: "no-store" });
-      if (res.status === 429) {
-        throw new Error("RATE_LIMIT");
-      }
-      if (res.status === 404) {
-        throw new Error("NOT_FOUND");
-      }
+      if (res.status === 429) throw new Error("RATE_LIMIT");
+      if (res.status === 404) throw new Error("NOT_FOUND");
       if (!res.ok) {
         const body = await res.text().catch(() => "");
         throw new Error(`PUBG_API_ERROR:${res.status}:${body.slice(0, 200)}`);
@@ -35,9 +80,7 @@ async function pubgFetch(url: string) {
       return res.json();
     })();
     inFlightFetches.set(url, promise);
-    promise.finally(() => {
-      inFlightFetches.delete(url);
-    });
+    promise.finally(() => inFlightFetches.delete(url));
   }
   return promise;
 }
@@ -46,28 +89,37 @@ async function pubgFetch(url: string) {
 // ⚡ 캐시 3분 — 같은 닉네임 여러 API 라우트가 중복 호출하는 낭비 방지
 export async function getPlayer(nickname: string, platform: string) {
   const key = `player:${platform}:${nickname.toLowerCase()}`;
-  const cached = getCache<{ accountId: string; nickname: string; recentMatchIds: string[] }>(key);
+  const cached = await getCacheAsync<{ accountId: string; nickname: string; recentMatchIds: string[] }>(key);
   if (cached) return cached;
 
   const shard = getShard(platform);
   const url = `${BASE_URL}/${shard}/players?filter[playerNames]=${encodeURIComponent(nickname)}`;
-  const data = await pubgFetch(url);
-  const player = data.data?.[0];
-  if (!player) throw new Error("NOT_FOUND");
-  const result = {
-    accountId: player.id as string,
-    nickname: player.attributes.name as string,
-    recentMatchIds: (player.relationships?.matches?.data ?? []).map((m: { id: string }) => m.id).slice(0, 20) as string[],
-  };
-  setCache(key, result, 3 * 60 * 1000); // 3분 캐시
-  return result;
+  try {
+    const data = await pubgFetch(url);
+    const player = (data as { data?: { id: string; attributes: { name: string }; relationships?: { matches?: { data: { id: string }[] } } }[] }).data?.[0];
+    if (!player) throw new Error("NOT_FOUND");
+    const result = {
+      accountId: player.id,
+      nickname: player.attributes.name,
+      recentMatchIds: (player.relationships?.matches?.data ?? []).map((m: { id: string }) => m.id).slice(0, 20),
+    };
+    await setCacheWithStaleAsync(key, result, 15 * 60 * 1000); // 15분 캐시, stale 4h
+    return result;
+  } catch (err) {
+    // RATE_LIMIT 시 stale 캐시 우선 반환 (유저에게 에러 안 보임)
+    if (err instanceof Error && err.message === "RATE_LIMIT") {
+      const stale = await getStaleOrFreshAsync<{ accountId: string; nickname: string; recentMatchIds: string[] }>(key);
+      if (stale) return stale;
+    }
+    throw err;
+  }
 }
 
 // ─── 현재 시즌 조회 ────────────────────────────────────────────
 // ⚡ 캐시 6시간 — 시즌은 하루에 바뀌지 않음
 export async function getCurrentSeason(platform: string) {
   const key = `season:${platform}`;
-  const cached = getCache<string>(key);
+  const cached = await getCacheAsync<string>(key);
   if (cached) return cached;
 
   const shard = getShard(platform);
@@ -79,7 +131,7 @@ export async function getCurrentSeason(platform: string) {
   const seasonId = current
     ? (current.id as string)
     : (data.data?.[data.data.length - 1]?.id as string);
-  if (seasonId) setCache(key, seasonId, 6 * 60 * 60 * 1000); // 6시간 캐시
+  if (seasonId) await setCacheWithStaleAsync(key, seasonId, 24 * 60 * 60 * 1000, 72 * 60 * 60 * 1000); // 24h 캐시, stale 72h
   return seasonId;
 }
 
@@ -122,7 +174,7 @@ function computeModeStats(rawModes: Record<string, unknown>[]): ModeStats | null
 // ⚡ 캐시 5분
 export async function getSeasonStats(accountId: string, platform: string, seasonId: string) {
   const key = `season-stats:${platform}:${accountId}:${seasonId}`;
-  const cached = getCache<{ kda: number; winRate: number; avgDamage: number; headshotRate: number; topTenRate: number; gamesPlayed: number; modeStats: unknown }>(key);
+  const cached = await getCacheAsync<{ kda: number; winRate: number; avgDamage: number; headshotRate: number; topTenRate: number; gamesPlayed: number; modeStats: unknown }>(key);
   if (cached !== null) return cached;
 
   const shard = getShard(platform);
@@ -163,7 +215,7 @@ export async function getSeasonStats(accountId: string, platform: string, season
     gamesPlayed: totalGames,
     modeStats,
   };
-  setCache(key, result, 5 * 60 * 1000); // 5분 캐시
+  await setCacheWithStaleAsync(key, result, 30 * 60 * 1000); // 30분 캐시, stale 4h
   return result;
 }
 // ─── 랭크 통계 조회 ────────────────────────────────────────────
@@ -178,7 +230,7 @@ type RankedResult = { squad: RankedTierInfo | null; duo: RankedTierInfo | null; 
 
 export async function getRankedStats(accountId: string, platform: string, seasonId: string): Promise<RankedResult> {
   const key = `ranked-stats:${platform}:${accountId}:${seasonId}`;
-  const cached = getCache<RankedResult>(key);
+  const cached = await getCacheAsync<RankedResult>(key);
   if (cached !== null) return cached;
 
   const shard = getShard(platform);
@@ -223,10 +275,10 @@ export async function getRankedStats(accountId: string, platform: string, season
       duo:   extractMode(["duo","duo-fpp"]),
       solo:  extractMode(["solo","solo-fpp"]),
     };
-    setCache(key, result, 5 * 60 * 1000); // 5분 캐시
+    await setCacheWithStaleAsync(key, result, 30 * 60 * 1000); // 30분 캐시, stale 4h
     return result;
   } catch {
-    setCache(key, null, 60 * 1000); // 실패도 1분 캐시 (반복 호출 방지)
+    setCache(key, null, 3 * 60 * 1000); // 실패도 3분 캐시 (반복 호출 방지)
     return null;
   }
 }
@@ -240,8 +292,8 @@ export async function getMatch(matchId: string, platform: string) {
 
   const shard = getShard(platform);
   const url = `${BASE_URL}/${shard}/matches/${matchId}`;
-  const data = await pubgFetch(url);
-  setCache(key, data, 24 * 60 * 60 * 1000); // 24시간 캐시
+  const data = await pubgFetch(url, { rateLimited: false }); // 매치는 rate limit 면제
+  setCacheWithStale(key, data, 24 * 60 * 60 * 1000, 7 * 24 * 60 * 60 * 1000); // 24h 캐시, stale 7일 (매치는 불변)
   return data;
 }
 
@@ -249,13 +301,13 @@ export async function getMatch(matchId: string, platform: string) {
 // ⚡ 캐시 1시간
 export async function getWeaponMastery(accountId: string, platform: string) {
   const key = `weapon-mastery:${platform}:${accountId}`;
-  const cached = getCache<Record<string, unknown>>(key);
+  const cached = await getCacheAsync<Record<string, unknown>>(key);
   if (cached) return cached;
 
   const shard = getShard(platform);
   const url = `${BASE_URL}/${shard}/players/${accountId}/weapon_mastery`;
   const data = await pubgFetch(url);
-  setCache(key, data, 60 * 60 * 1000); // 1시간 캐시
+  await setCacheWithStaleAsync(key, data, 2 * 60 * 60 * 1000); // 2시간 캐시, stale 4h
   return data;
 }
 

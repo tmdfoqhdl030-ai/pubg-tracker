@@ -1,10 +1,11 @@
 // 💊 나의 생존 스타일 카드 — 비동기 서버 컴포넌트
 
 import type { HealPattern } from "@/lib/heal-pattern";
+import { getBaseUrl } from "@/lib/base-url";
 
 async function fetchHealPattern(nickname: string, platform: string): Promise<HealPattern | null> {
   try {
-    const base = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3001";
+    const base = getBaseUrl();
     const res = await fetch(
       `${base}/api/v1/heal-pattern?nickname=${encodeURIComponent(nickname)}&platform=${platform}`,
       { cache: "no-store" }

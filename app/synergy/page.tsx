@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Shield, ArrowLeft, Trophy, Zap } from "lucide-react";
+import { ArrowLeft, Trophy, Zap } from "lucide-react";
+import { getBaseUrl } from "@/lib/base-url";
 
 interface Props {
   searchParams: Promise<{ players?: string; platform?: string }>;
@@ -30,7 +31,7 @@ interface SynergyResult {
 
 async function fetchSynergy(players: string[], platform: string): Promise<SynergyResult | null> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3001";
+    const baseUrl = getBaseUrl();
     const res = await fetch(`${baseUrl}/api/synergy`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -79,8 +80,8 @@ export default async function SynergyPage({ searchParams }: Props) {
             <ArrowLeft size={14} />뒤로
           </Link>
           <div className="flex items-center gap-2">
-            <Shield size={16} style={{ color: "#F97316" }} />
-            <span className="font-bold text-sm" style={{ color: "#ECEFF4" }}>펍지고 (PubgGo)</span>
+            <img src="/logo.svg" alt="m249" width={24} height={24} style={{ borderRadius: 5 }} />
+            <span className="font-bold text-sm" style={{ color: "#ECEFF4" }}>m249.kr</span>
           </div>
           <span className="text-xs" style={{ color: "#72748A" }}>시너지</span>
         </div>
@@ -146,7 +147,7 @@ export default async function SynergyPage({ searchParams }: Props) {
                   </div>
                   <div className="grid grid-cols-3 gap-0">
                     {[
-                      { label: "함께한 게임", value: String(result.togetherStats.gamesPlayed), sub: "최근 20게임 기준" },
+                      { label: "함께한 게임", value: String(result.togetherStats.gamesPlayed), sub: "최근 5게임 기준" },
                       { label: "함께 승률", value: `${result.togetherStats.winRate.toFixed(1)}%`, sub: `평균 #${result.togetherStats.avgPlacement.toFixed(1)}위` },
                       { label: "팀 평균 킬", value: String(result.togetherStats.avgTotalKills), sub: `합산 딜 ${result.togetherStats.avgTotalDamage}` },
                     ].map(({ label, value, sub }, i) => (
@@ -211,7 +212,7 @@ export default async function SynergyPage({ searchParams }: Props) {
 
       <footer style={{ borderTop: "1px solid #26262E", marginTop: "2rem" }}>
         <div className="max-w-3xl mx-auto px-5 py-5 text-center text-xs" style={{ color: "#3A3A48" }}>
-          펍지고 (PubgGo) — PUBG Corporation과 무관한 비공식 서비스입니다.
+          m249.kr — PUBG Corporation과 무관한 비공식 배틀그라운드 전적검색 서비스입니다.
         </div>
       </footer>
     </div>

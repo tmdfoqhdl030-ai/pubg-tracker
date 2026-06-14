@@ -40,27 +40,7 @@ export async function GET(req: NextRequest) {
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error("[match-weapons]", msg);
-    if (msg === "RATE_LIMIT") {
-      return NextResponse.json(
-        {
-          error: "RATE_LIMIT",
-          message: "PUBG API 호출 한도를 초과했습니다. 잠시 후 다시 시도해주세요.",
-          matchWeapons: [],
-          topWeapons: [],
-          gamesAnalyzed: 0
-        },
-        { status: 429 }
-      );
-    }
-    return NextResponse.json(
-      {
-        error: "SERVER_ERROR",
-        message: msg,
-        matchWeapons: [],
-        topWeapons: [],
-        gamesAnalyzed: 0
-      },
-      { status: 500 }
-    );
+    // 오류/한도초과 모두 빈 데이터로 조용히 처리
+    return NextResponse.json({ matchWeapons: [], topWeapons: [], gamesAnalyzed: 0, _limited: msg === "RATE_LIMIT" });
   }
 }

@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     const playerA = await getPlayer(baseNick, platform);
 
     // 2. 최근 매치 fetch (unlimited RPM)
-    const matchLimit = Math.min(playerA.recentMatchIds.length, 20);
+    const matchLimit = Math.min(playerA.recentMatchIds.length, 5);
     const matchResults = await Promise.allSettled(
       playerA.recentMatchIds.slice(0, matchLimit).map(async (id) => ({
         matchId: id,

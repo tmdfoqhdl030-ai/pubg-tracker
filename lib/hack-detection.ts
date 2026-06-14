@@ -95,7 +95,7 @@ export async function calculateHackScore(
       label: "무기 마스터리 데이터가 부족합니다 (킬 10회 이상 필요).",
       disclaimer: "이 수치는 참고용이며 실제 핵 사용 여부를 보증하지 않습니다.",
     };
-    setCache(cacheKey, empty, 3600 * 1000);
+    setCache(cacheKey, empty, 4 * 3600 * 1000);
     return empty;
   }
 
@@ -164,6 +164,6 @@ export async function calculateHackScore(
     disclaimer: "이 수치는 참고용이며 실제 핵 사용 여부를 보증하지 않습니다.",
   };
 
-  setCache(cacheKey, result, 3600 * 1000);
+  setCache(cacheKey, result, 4 * 3600 * 1000);
   return result;
 }

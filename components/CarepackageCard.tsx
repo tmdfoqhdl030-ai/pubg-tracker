@@ -1,10 +1,11 @@
 // 📦 케어패키지 기록 카드 — 비동기 서버 컴포넌트
 
 import type { CarepackageStats } from "@/lib/carepackage-stats";
+import { getBaseUrl } from "@/lib/base-url";
 
 async function fetchCarepackage(nickname: string, platform: string): Promise<CarepackageStats | null> {
   try {
-    const base = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3001";
+    const base = getBaseUrl();
     const res = await fetch(
       `${base}/api/v1/carepackage?nickname=${encodeURIComponent(nickname)}&platform=${platform}`,
       { cache: "no-store" }

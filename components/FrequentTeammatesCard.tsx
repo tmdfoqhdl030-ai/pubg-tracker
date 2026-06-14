@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Users, ChevronRight, Trophy, Target, Swords } from "lucide-react";
+import { Users, Trophy, Target, Swords } from "lucide-react";
 import type { TeammateEntry } from "@/lib/teammates";
 
 interface Props { playerNickname: string; platform: string; }
@@ -169,7 +169,10 @@ export default function FrequentTeammatesCard({ playerNickname, platform }: Prop
         const res = await fetch(`${base}/api/teammates?name=${encodeURIComponent(playerNickname)}&platform=${platform}&limit=4`);
         if (!cancelled) {
           if (res.ok) setData(await res.json());
-          else setError("불러오기 실패");
+          else {
+            const body = await res.json().catch(() => ({}));
+            setError(res.status === 429 ? "API 요청 한도 초과\n잠시 후 새로고침 해주세요" : (body.error ?? "불러오기 실패"));
+          }
         }
       } catch {
         if (!cancelled) setError("서버 연결 실패");
@@ -182,9 +185,6 @@ export default function FrequentTeammatesCard({ playerNickname, platform }: Prop
   }, [playerNickname, platform]);
 
   const teammates = data?.frequentTeammates ?? [];
-  const squadUrl = `/squad?${[playerNickname, ...teammates.slice(0, 3).map(t => t.nickname)]
-    .map(p => `members=${encodeURIComponent(p)}`)
-    .join("&")}&platform=${platform}`;
 
   return (
     <div className="bg-white rounded-xl overflow-hidden" style={{ border: "1px solid #E2E8F0" }}>
@@ -202,7 +202,7 @@ export default function FrequentTeammatesCard({ playerNickname, platform }: Prop
             </span>
           )}
         </div>
-        <span className="text-[10px]" style={{ color: "#94A3B8" }}>최근 20게임</span>
+        <span className="text-[10px]" style={{ color: "#94A3B8" }}>최근 5게임</span>
       </div>
 
       {/* ── 로딩 ── */}
@@ -215,12 +215,12 @@ export default function FrequentTeammatesCard({ playerNickname, platform }: Prop
       {/* ── 에러 / 빈 상태 ── */}
       {!loading && (error || teammates.length === 0) && (
         <div className="px-5 py-8 text-center">
-          <div className="text-2xl mb-2">👥</div>
+          <div className="text-2xl mb-2">{error?.includes("한도") ? "⏳" : "👥"}</div>
           <p className="text-sm font-medium mb-1" style={{ color: "#0F172A" }}>
-            {error ? "오류 발생" : "팀원 데이터 없음"}
+            {error ? (error.includes("한도") ? "API 요청 한도 초과" : "오류 발생") : "팀원 데이터 없음"}
           </p>
-          <p className="text-xs" style={{ color: "#94A3B8" }}>
-            {error ?? "최근 20게임에서 함께 플레이한 팀원이 없습니다"}
+          <p className="text-xs whitespace-pre-line" style={{ color: "#94A3B8" }}>
+            {error?.includes("한도") ? "잠시 후 새로고침 해주세요" : (error ?? "최근 5게임에서 함께 플레이한 팀원이 없습니다")}
           </p>
         </div>
       )}
@@ -234,24 +234,6 @@ export default function FrequentTeammatesCard({ playerNickname, platform }: Prop
             ))}
           </div>
 
-          {/* ── 스쿼드 분석 버튼 ── */}
-          {teammates.length >= 3 && (
-            <div className="p-3" style={{ borderTop: "1px solid #F1F5F9" }}>
-              <Link
-                href={squadUrl}
-                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-bold transition-all hover:opacity-90"
-                style={{
-                  background: "linear-gradient(135deg, #F97316, #EA580C)",
-                  color: "#fff",
-                  boxShadow: "0 2px 8px rgba(249,115,22,0.25)",
-                }}
-              >
-                <Users size={13} />
-                상위 4명으로 스쿼드 분석
-                <ChevronRight size={13} />
-              </Link>
-            </div>
-          )}
         </>
       )}
     </div>

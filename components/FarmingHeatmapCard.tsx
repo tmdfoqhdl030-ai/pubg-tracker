@@ -1,10 +1,11 @@
 // 🗺 파밍 루트 히트맵 카드 — 비동기 서버 컴포넌트
 
 import type { FarmingHeatmap } from "@/lib/farming-heatmap";
+import { getBaseUrl } from "@/lib/base-url";
 
 async function fetchFarmingHeatmap(nickname: string, platform: string): Promise<FarmingHeatmap | null> {
   try {
-    const base = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3001";
+    const base = getBaseUrl();
     const res = await fetch(
       `${base}/api/v1/farming-heatmap?nickname=${encodeURIComponent(nickname)}&platform=${platform}`,
       { cache: "no-store" }

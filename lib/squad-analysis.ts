@@ -139,41 +139,66 @@ export function analyzeChemistry(members: SquadMember[]): { best: ChemistryPair 
 }
 
 // 3. AI 전술 보고서 생성
-export function generateTacticalReport(members: SquadMember[]): string {
-  if (members.length === 0) return "팀원 정보가 부족하여 작전을 수립할 수 없습니다.";
+export interface TacticalBriefItem {
+  phase: string;   // 단계 라벨 (예: "진입", "화력")
+  icon: string;    // 이모지
+  title: string;   // 한 줄 핵심 (굵게)
+  detail: string;  // 부연 설명
+}
+
+export function generateTacticalReport(members: SquadMember[]): TacticalBriefItem[] {
+  if (members.length === 0) {
+    return [{ phase: "대기", icon: "⚠️", title: "작전 수립 불가", detail: "팀원 정보가 부족합니다." }];
+  }
 
   const assaulters = members.filter(m => m.role === "돌격형").map(m => m.nickname);
   const snipers = members.filter(m => m.role === "저격형").map(m => m.nickname);
   const supporters = members.filter(m => m.role === "지원형").map(m => m.nickname);
   const survivors = members.filter(m => m.role === "생존형").map(m => m.nickname);
 
-  let report = "";
+  const items: TacticalBriefItem[] = [];
 
-  if (assaulters.length > 0) {
-    report += `교전이 시작되면 돌격대장 ${assaulters.join(" 대원과 ")} 대원이 최전선에서 과감하게 진입해 적의 시선을 끌어주어야 합니다. `;
-  } else {
-    report += `이 팀은 전방을 뚫어줄 전문 돌격수가 부족합니다. 성급한 진입을 자제하고 3인칭 엄폐 각을 활용해 천천히 진입해야 합니다. `;
-  }
+  // 1) 진입
+  items.push(assaulters.length > 0
+    ? { phase: "진입", icon: "⚔️",
+        title: `${assaulters.join(", ")} — 선봉 진입`,
+        detail: "최전선에서 과감하게 들어가 적의 시선을 끌어줍니다." }
+    : { phase: "진입", icon: "🛡️",
+        title: "전문 돌격수 부재 — 신중 진입",
+        detail: "성급한 진입을 자제하고 3인칭 엄폐 각을 활용해 천천히 들어갑니다." }
+  );
 
-  if (snipers.length > 0) {
-    report += `이때 고지대나 2선에 배치된 명사수 ${snipers.join(", ")} 대원이 DMR/SR로 확실하게 상대 대가리를 터뜨려주며 수적 우위를 확보해야 합니다. `;
-  } else {
-    report += `원거리 지원 화력이 아쉬우니, 개활지 싸움은 피하고 시가전이나 가옥 방어 중심으로 동선을 짜는 것을 강력히 추천합니다. `;
-  }
+  // 2) 화력
+  items.push(snipers.length > 0
+    ? { phase: "화력", icon: "🎯",
+        title: `${snipers.join(", ")} — 후방 저격`,
+        detail: "고지대·2선에서 DMR/SR로 헤드샷, 수적 우위를 확보합니다." }
+    : { phase: "화력", icon: "🏠",
+        title: "원거리 화력 부족 — 근접전 위주",
+        detail: "개활지 싸움은 피하고 시가전·가옥 방어 중심으로 동선을 짭니다." }
+  );
 
-  if (supporters.length > 0) {
-    report += `교전 중 부상이나 기절이 발생할 경우, 만능 헬퍼 ${supporters.join(" 대원이 ")} 신속하게 연막을 펼쳐 부활 각을 확보하고 치료제 공급을 전담하면 팀 유지력이 극대화됩니다. `;
-  } else {
-    report += `기절 시 살려줄 전담 서포터가 부재하므로, 각자 엄폐물을 절대 벗어나지 않는 이기적인 생존 플레이를 지향해야 생존률이 오릅니다. `;
-  }
+  // 3) 유지
+  items.push(supporters.length > 0
+    ? { phase: "유지", icon: "💉",
+        title: `${supporters.join(", ")} — 부활·보급 전담`,
+        detail: "연막으로 부활 각을 확보하고 치료제 공급을 맡아 유지력을 극대화합니다." }
+    : { phase: "유지", icon: "🚷",
+        title: "전담 서포터 부재 — 각자 생존",
+        detail: "기절 시 살려줄 인원이 없으니 엄폐물을 절대 벗어나지 않습니다." }
+  );
 
-  if (survivors.length > 0) {
-    report += `서클 외곽 운영 시에는 넓은 시야를 가진 생존 마스터 ${survivors.join(", ")} 대원의 오더를 전적으로 따르며 짤파밍과 차량 확보에 집중하면 무난한 TOP 10 진입이 가능합니다.`;
-  } else {
-    report += `운영의 핵심인 네비게이터가 없으니, 미니맵 자기장 서클 변화에 항상 귀를 기울이고 남들보다 반 박자 빠르게 중심부 스플릿 가옥을 점령하는 야성을 키워야 합니다.`;
-  }
+  // 4) 운영
+  items.push(survivors.length > 0
+    ? { phase: "운영", icon: "🧭",
+        title: `${survivors.join(", ")} — 운영 오더`,
+        detail: "넓은 시야로 짤파밍·차량 확보를 주도해 무난한 TOP 10을 노립니다." }
+    : { phase: "운영", icon: "🗺️",
+        title: "네비게이터 부재 — 선점 운영",
+        detail: "자기장 변화에 항상 귀 기울이고 반 박자 빠르게 중심부 가옥을 선점합니다." }
+  );
 
-  return report;
+  return items;
 }
 
 // 4. 팀 시그니처 맵 & 드롭포인트 도출

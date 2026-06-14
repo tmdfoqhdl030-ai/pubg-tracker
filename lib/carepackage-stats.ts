@@ -102,6 +102,6 @@ export async function analyzeCarepackageStats(
     percentile: estimatePercentile(ratio),
   };
 
-  setCache(cacheKey, result, 7200 * 1000); // 2h
+  setCache(cacheKey, result, 6 * 3600 * 1000); // 2h
   return result;
 }

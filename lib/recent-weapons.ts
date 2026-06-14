@@ -85,6 +85,6 @@ export async function analyzeRecentWeapons(
     }));
 
   const result: RecentWeaponsResult = { matchWeapons, topWeapons, gamesAnalyzed };
-  setCache(cacheKey, result, 3600 * 1000); // 1시간 캐시
+  setCache(cacheKey, result, 4 * 3600 * 1000); // 1시간 캐시
   return result;
 }
