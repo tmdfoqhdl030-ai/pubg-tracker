@@ -99,28 +99,49 @@ export default async function GuideArticlePage({ params }: Props) {
         {/* 섹션 */}
         <div className="space-y-9">
           {guide.sections.map((sec, i) => (
-            <section key={i}>
-              {sec.heading && (
-                <h2 className="text-lg sm:text-xl font-bold mb-4" style={{ color: "#F1F5F9" }}>
-                  {sec.heading}
-                </h2>
+            <>
+              <section key={i}>
+                {sec.heading && (
+                  <h2 className="text-lg sm:text-xl font-bold mb-4" style={{ color: "#F1F5F9" }}>
+                    {sec.heading}
+                  </h2>
+                )}
+                {sec.paragraphs?.map((p, j) => (
+                  <p key={j} className="text-sm sm:text-[15px] leading-8 mb-4" style={{ color: "#B6C2D1" }}>
+                    {p}
+                  </p>
+                ))}
+                {sec.list && (
+                  <ul className="space-y-2.5 mt-3">
+                    {sec.list.map((item, k) => (
+                      <li key={k} className="flex gap-2.5 text-sm leading-7" style={{ color: "#B6C2D1" }}>
+                        <ChevronRight size={16} className="flex-shrink-0 mt-1" style={{ color: "#F97316" }} />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+              {/* 2번째 섹션 이후 인라인 CTA */}
+              {i === 1 && guide.sections.length > 3 && (
+                <div
+                  key="inline-cta"
+                  className="flex items-center justify-between gap-4 rounded-xl px-5 py-4"
+                  style={{ backgroundColor: "#0F2A40", border: "1px solid #F97316AA" }}
+                >
+                  <p className="text-sm font-medium leading-6" style={{ color: "#CBD5E1" }}>
+                    📊 내 실제 수치가 궁금하다면?
+                  </p>
+                  <Link
+                    href="/"
+                    className="flex-shrink-0 text-xs font-bold px-3 py-2 rounded-lg whitespace-nowrap"
+                    style={{ backgroundColor: "#F97316", color: "#fff" }}
+                  >
+                    전적 바로 확인
+                  </Link>
+                </div>
               )}
-              {sec.paragraphs?.map((p, j) => (
-                <p key={j} className="text-sm sm:text-[15px] leading-8 mb-4" style={{ color: "#B6C2D1" }}>
-                  {p}
-                </p>
-              ))}
-              {sec.list && (
-                <ul className="space-y-2.5 mt-3">
-                  {sec.list.map((item, k) => (
-                    <li key={k} className="flex gap-2.5 text-sm leading-7" style={{ color: "#B6C2D1" }}>
-                      <ChevronRight size={16} className="flex-shrink-0 mt-1" style={{ color: "#F97316" }} />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section>
+            </>
           ))}
         </div>
 
