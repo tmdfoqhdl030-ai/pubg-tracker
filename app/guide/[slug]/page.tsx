@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Fragment } from "react";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Clock, ChevronRight } from "lucide-react";
 import type { Metadata } from "next";
@@ -99,8 +100,8 @@ export default async function GuideArticlePage({ params }: Props) {
         {/* 섹션 */}
         <div className="space-y-9">
           {guide.sections.map((sec, i) => (
-            <>
-              <section key={i}>
+            <Fragment key={i}>
+              <section>
                 {sec.heading && (
                   <h2 className="text-lg sm:text-xl font-bold mb-4" style={{ color: "#F1F5F9" }}>
                     {sec.heading}
@@ -125,7 +126,6 @@ export default async function GuideArticlePage({ params }: Props) {
               {/* 2번째 섹션 이후 인라인 CTA */}
               {i === 1 && guide.sections.length > 3 && (
                 <div
-                  key="inline-cta"
                   className="flex items-center justify-between gap-4 rounded-xl px-5 py-4"
                   style={{ backgroundColor: "#0F2A40", border: "1px solid #F97316AA" }}
                 >
@@ -141,7 +141,7 @@ export default async function GuideArticlePage({ params }: Props) {
                   </Link>
                 </div>
               )}
-            </>
+            </Fragment>
           ))}
         </div>
 
