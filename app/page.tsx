@@ -106,6 +106,77 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ── 서비스 설명 (고유 콘텐츠) ── */}
+        <section className="pt-12 pb-4">
+          <h2 className="text-lg font-bold mb-5" style={{ color: "#0F172A" }}>
+            m249.kr는 이렇게 다릅니다
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <div className="rounded-xl p-5" style={{ backgroundColor: "#fff", border: "1px solid #E2E8F0" }}>
+              <p className="text-sm font-bold mb-1.5" style={{ color: "#0F172A" }}>① 숫자가 아니라 맥락을 봅니다</p>
+              <p className="text-xs leading-6" style={{ color: "#64748B" }}>
+                단순히 KDA와 승률만 나열하지 않습니다. 최근 매치의 교전 거리, 생존 패턴, 힐링 타이밍을 함께 묶어
+                &ldquo;왜&rdquo; 그 결과가 나왔는지 AI가 해석해서 보여줍니다.
+              </p>
+            </div>
+            <div className="rounded-xl p-5" style={{ backgroundColor: "#fff", border: "1px solid #E2E8F0" }}>
+              <p className="text-sm font-bold mb-1.5" style={{ color: "#0F172A" }}>② 약점에 맞는 공략을 연결합니다</p>
+              <p className="text-xs leading-6" style={{ color: "#64748B" }}>
+                헤드샷률이 낮으면 에임 공략을, 생존 시간이 짧으면 초반 동선 공략을 자동으로 추천합니다.
+                전적 조회와 학습이 한 화면에서 끝나도록 설계했습니다.
+              </p>
+            </div>
+            <div className="rounded-xl p-5" style={{ backgroundColor: "#fff", border: "1px solid #E2E8F0" }}>
+              <p className="text-sm font-bold mb-1.5" style={{ color: "#0F172A" }}>③ 듀오·스쿼드 케미를 점수화합니다</p>
+              <p className="text-xs leading-6" style={{ color: "#64748B" }}>
+                같이 플레이한 동료와의 합을 점수로 환산해, 어떤 조합일 때 승률이 오르는지 데이터로 확인할 수 있습니다.
+              </p>
+            </div>
+          </div>
+
+          <h2 className="text-lg font-bold mb-3" style={{ color: "#0F172A" }}>
+            전적 조회는 어떻게 진행되나요?
+          </h2>
+          <ol className="space-y-2 mb-8 text-sm leading-7" style={{ color: "#475569" }}>
+            <li><span style={{ color: "#F97316", fontWeight: 700 }}>1.</span> 검색창에 배틀그라운드 닉네임을 입력하고 플랫폼(스팀/카카오/PS·Xbox)을 선택합니다.</li>
+            <li><span style={{ color: "#F97316", fontWeight: 700 }}>2.</span> Krafton 공식 PUBG API에서 최근 매치 기록을 불러와 KDA, 헤드샷률, 평균 딜량을 계산합니다.</li>
+            <li><span style={{ color: "#F97316", fontWeight: 700 }}>3.</span> AI가 약점·강점을 진단하고, 비슷한 상황의 다른 유저 데이터와 비교해 등급을 추정합니다.</li>
+            <li><span style={{ color: "#F97316", fontWeight: 700 }}>4.</span> 진단 결과에 맞는 공략 가이드와 팀 시너지 분석 링크를 함께 제공합니다.</li>
+          </ol>
+
+          <h2 className="text-lg font-bold mb-3" style={{ color: "#0F172A" }}>
+            자주 묻는 질문
+          </h2>
+          <div className="space-y-2.5">
+            <details className="rounded-xl p-4" style={{ backgroundColor: "#fff", border: "1px solid #E2E8F0" }}>
+              <summary className="text-sm font-semibold cursor-pointer" style={{ color: "#0F172A" }}>
+                전적 조회에 비용이 드나요?
+              </summary>
+              <p className="text-xs mt-2 leading-6" style={{ color: "#64748B" }}>
+                아니요, m249.kr의 전적 조회·AI 분석·공략 추천 기능은 모두 무료로 제공됩니다.
+              </p>
+            </details>
+            <details className="rounded-xl p-4" style={{ backgroundColor: "#fff", border: "1px solid #E2E8F0" }}>
+              <summary className="text-sm font-semibold cursor-pointer" style={{ color: "#0F172A" }}>
+                검색 결과가 안 나와요. 왜 그런가요?
+              </summary>
+              <p className="text-xs mt-2 leading-6" style={{ color: "#64748B" }}>
+                닉네임 표기가 정확하지 않거나, 선택한 플랫폼이 실제 계정 플랫폼과 다른 경우가 가장 흔한 원인입니다.
+                스팀/카카오/콘솔 여부를 다시 확인해 주세요.
+              </p>
+            </details>
+            <details className="rounded-xl p-4" style={{ backgroundColor: "#fff", border: "1px solid #E2E8F0" }}>
+              <summary className="text-sm font-semibold cursor-pointer" style={{ color: "#0F172A" }}>
+                다른 전적검색 사이트와 무슨 차이가 있나요?
+              </summary>
+              <p className="text-xs mt-2 leading-6" style={{ color: "#64748B" }}>
+                숫자 나열에서 끝나지 않고, AI가 플레이 스타일을 진단해 부족한 부분을 짚어주고 그에 맞는 공략까지
+                바로 이어준다는 점이 가장 큰 차이입니다.
+              </p>
+            </details>
+          </div>
+        </section>
+
       </main>
 
       <footer className="bg-white mt-6" style={{ borderTop: "1px solid #E2E8F0" }}>

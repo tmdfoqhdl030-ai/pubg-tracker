@@ -28,6 +28,10 @@ interface Props {
   searchParams: Promise<{ platform?: string; tab?: string }>;
 }
 
+export const metadata = {
+  robots: { index: false, follow: true },
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function fetchPlayerData(nickname: string, platform: string): Promise<any> {
   try {

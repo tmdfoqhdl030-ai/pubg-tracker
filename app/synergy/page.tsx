@@ -6,6 +6,10 @@ interface Props {
   searchParams: Promise<{ players?: string; platform?: string }>;
 }
 
+export const metadata = {
+  robots: { index: false, follow: true },
+};
+
 interface SynergyResult {
   type: string;
   players: string[];
