@@ -185,6 +185,8 @@ export default function Home() {
           <div className="flex justify-center gap-5 mt-2">
             <Link href="/about" className="hover:underline" style={{ color: "#64748B" }}>서비스 소개</Link>
             <Link href="/privacy" className="hover:underline" style={{ color: "#64748B" }}>개인정보처리방침</Link>
+            <Link href="/terms" className="hover:underline" style={{ color: "#64748B" }}>이용약관</Link>
+            <Link href="/contact" className="hover:underline" style={{ color: "#64748B" }}>문의</Link>
             <a href="mailto:tmdfoqhdl030@gmail.com" className="hover:underline" style={{ color: "#64748B" }}>문의</a>
           </div>
         </div>
